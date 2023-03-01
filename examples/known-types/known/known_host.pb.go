@@ -42,7 +42,12 @@ func NewWellKnownPlugin(ctx context.Context, opt WellKnownPluginOption) (*WellKn
 	// Combine the above into our baseline config, overriding defaults.
 	config := wazero.NewModuleConfig().
 		// By default, I/O streams are discarded and there's no file system.
-		WithStdout(opt.Stdout).WithStderr(opt.Stderr).WithFS(opt.FS)
+		WithStdout(opt.Stdout).WithStderr(opt.Stderr)
+
+	// configure FS only when not nil
+	if opt.FS != nil {
+		config = config.WithFS(opt.FS)
+	}
 
 	return &WellKnownPlugin{
 		cache:  cache,

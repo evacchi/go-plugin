@@ -136,7 +136,12 @@ func genHost(g *protogen.GeneratedFile, f *fileInfo, service *serviceInfo) {
 			// Combine the above into our baseline config, overriding defaults.
 			config := %s().
 				// By default, I/O streams are discarded and there's no file system.
-				WithStdout(opt.Stdout).WithStderr(opt.Stderr).WithFS(opt.FS)
+				WithStdout(opt.Stdout).WithStderr(opt.Stderr)
+			
+			// configure FS only when not nil
+			if opt.FS != nil {
+				config = config.WithFS(opt.FS)
+			}
 			`,
 		g.QualifiedGoIdent(wazeroPackage.Ident("NewCompilationCache")),
 		g.QualifiedGoIdent(wazeroPackage.Ident("NewModuleConfig")),
